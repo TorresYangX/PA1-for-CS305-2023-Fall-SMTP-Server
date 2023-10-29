@@ -44,6 +44,8 @@ def smtp():
     msg['Subject'] = subject
     msg['From'] = args.email
     conn.sendmail(args.email, to, msg.as_string())
+    # msg['From'] = 'error@mail.sustech.edu.cn'
+    # conn.sendmail('error@mail.sustech.edu.cn', to, msg.as_string())
     conn.quit()
 
 

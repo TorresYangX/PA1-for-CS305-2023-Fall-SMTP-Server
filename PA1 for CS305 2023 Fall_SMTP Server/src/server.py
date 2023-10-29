@@ -156,11 +156,10 @@ class SMTPServer(BaseRequestHandler):
             elif data.startswith('mail FROM'):
                 sender = data[10:].strip()
                 # Verify the existence of sender's account
-                if sender[1:-1] not in ACCOUNTS.keys():
+                if sender[1:-1] not in _config['accounts'][_config['agent'][sender[1:-1].split('@')[-1]]['pop'][4:]].keys():
                     print(sender[1:-1])
                     print('not in accounts')
-                    conn.sendall(b'250 Invaild sender\r\n')
-                    break
+                    conn.sendall(b'550 Invaild sender\r\n')
                 else:
                     conn.sendall(b'250 OK From\r\n')
 
