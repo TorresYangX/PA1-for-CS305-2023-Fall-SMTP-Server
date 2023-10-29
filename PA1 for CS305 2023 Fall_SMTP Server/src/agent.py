@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from email.mime.text import MIMEText
 from poplib import POP3
 from smtplib import SMTP
-
+import socket
 import tomli
 
 parser = ArgumentParser()
@@ -60,6 +60,8 @@ def pop():
                 print(f'{msg} messages ({bts} bytes)')
             elif cmd == 'list':
                 print(f'{conn.list()[1]}')
+            elif cmd.startswith('list '):
+                print(conn.list(int(cmd[5:])))
             elif cmd.startswith('retr '):
                 msg = list(map(str, conn.retr(int(cmd[5:]))[1]))
                 print('\r\n'.join(msg))
