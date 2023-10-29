@@ -155,7 +155,14 @@ class SMTPServer(BaseRequestHandler):
 
             elif data.startswith('mail FROM'):
                 sender = data[10:].strip()
-                conn.sendall(b'250 OK From\r\n')
+                # Verify the existence of sender's account
+                if sender[1:-1] not in ACCOUNTS.keys():
+                    print(sender[1:-1])
+                    print('not in accounts')
+                    conn.sendall(b'250 Invaild sender\r\n')
+                    break
+                else:
+                    conn.sendall(b'250 OK From\r\n')
 
             elif data.startswith('rcpt TO'):
                 receptor = data[8:].strip()
