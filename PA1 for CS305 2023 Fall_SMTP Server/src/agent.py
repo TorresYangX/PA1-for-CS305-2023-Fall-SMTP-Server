@@ -65,8 +65,11 @@ def pop():
             elif cmd.startswith('list '):
                 print(conn.list(int(cmd[5:])))
             elif cmd.startswith('retr '):
-                msg = list(map(str, conn.retr(int(cmd[5:]))[1]))
-                print('\r\n'.join(msg))
+                if cmd[5:].isdigit():
+                    msg = list(map(str, conn.retr(int(cmd[5:]))[1]))
+                    print('\r\n'.join(msg))
+                else:
+                    print(conn.retr(cmd[5:]))
             elif cmd.startswith('dele '):
                 print(conn.dele(int(cmd[5:])))
             elif cmd == 'rset':
@@ -76,6 +79,8 @@ def pop():
             elif cmd == 'quit':
                 print(conn.quit())
                 break
+            elif cmd == 'help':
+                print(conn._shortcmd('HELP'))
             else:
                 print('Invalid command')
         except KeyboardInterrupt:

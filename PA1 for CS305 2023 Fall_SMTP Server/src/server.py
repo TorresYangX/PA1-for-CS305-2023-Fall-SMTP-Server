@@ -97,13 +97,19 @@ class POP3Server(BaseRequestHandler):
                     conn.sendall(b'+OK ' + str(msg_index).encode() + b' ' + str(len(MAILBOXES[username][msg_index - 1])).encode() + b'\r\n')
 
             elif data.startswith('RETR'):
-                msg_index = int(data[5:])
+                index = data[5:]
+                # if index is not int, send back an error
+                if not index.isdigit():
+                    conn.sendall(b'-ERR the index should be a number\r\n')
+                    continue
+                msg_index = int(index)
                 if msg_index > len(MAILBOXES[username]) or msg_index < 1 or msg_index in to_dele:
-                    conn.sendall(b'-ERR no such message\r\n')
+                        conn.sendall(b'-ERR no such message\r\n')
                 else:
                     mail_content = MAILBOXES[username][msg_index - 1]
                     print(mail_content)
                     conn.sendall(f'+OK \r\n{mail_content}\r\n'.encode())
+            
 
             elif data.startswith('DELE'):
                 msg_index = int(data[5:])
@@ -119,6 +125,9 @@ class POP3Server(BaseRequestHandler):
 
             elif data == 'NOOP':
                 conn.sendall(b'+OK\r\n')
+
+            elif data == 'HELP':
+                conn.sendall(b'+OK STAT LIST RETR DELE QUIT NOOP RSET\r\n')
 
             else:
                 conn.sendall(b'-ERR command not supported\r\n')
